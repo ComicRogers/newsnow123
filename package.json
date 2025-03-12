@@ -6,8 +6,8 @@
   "packageManager": "pnpm@10.5.2",
   "author": {
     "url": "https://github.com/ComicRogers/",
-    "email": "orongxing@gmail.com",
-    "name": "ourongxing"
+    "email": "zhanglufeng5143@gmail.com",
+    "name": "ComicRogers"
   },
   "homepage": "https://github.com/ComicRogers/newsnow",
   "scripts": {
@@ -17,7 +17,7 @@
     "presource": "tsx ./scripts/favicon.ts && tsx ./scripts/source.ts",
     "start": "node --env-file .env.server dist/output/server/index.mjs",
     "preview": "cross-env CF_PAGES=1 npm run build && wrangler pages dev dist/output/public",
-    "deploy": "cross-env CF_PAGES=1 npm run build && wrangler pages deploy dist/output/public",
+    "deploy": "cross-env CF_PAGES=1 ENABLE_CACHE=false INIT_TABLE=false npm run build && wrangler pages deploy dist/output/public --commit-dirty=true",
     "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.app.json",
     "release": "bumpp",
     "prepare": "simple-git-hooks",
