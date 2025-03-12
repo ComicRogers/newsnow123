@@ -58,7 +58,7 @@ pnpm i
 pnpm dev
 ```
 
-If you want to add data sources, refer to the `shared/sources`, and `server/sources` directories. The project has complete types and a simple structure; feel free to explore ABC..
+If you want to add data sources, refer to the `shared/sources`, and `server/sources` directories. The project has complete types and a simple structure; feel free to explore ABCD..
 
 ## License
 
