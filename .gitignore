@@ -5,10 +5,9 @@ dist/
 .vinxi
 .cache
 .data
-.wrangler
 .env
 .env.*
 dev-dist
 *.tsbuildinfo
-wrangler.toml
+# wrangler.toml
 imports.app.d.ts
