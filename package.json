@@ -1,7 +1,7 @@
 {
-  "name": "newsnow",
+  "name": "newsnow123",
   "type": "module",
-  "version": "0.0.23",
+  "version": "0.0.01",
   "private": true,
   "packageManager": "pnpm@10.5.2",
   "author": {
@@ -9,7 +9,7 @@
     "email": "zhanglufeng5143@gmail.com",
     "name": "ComicRogers"
   },
-  "homepage": "https://github.com/ComicRogers/newsnow",
+  "homepage": "https://github.com/ComicRogers/newsnow123",
   "scripts": {
     "dev": "npm run presource && vite dev",
     "build": "npm run presource && vite build",
