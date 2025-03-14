@@ -20,7 +20,7 @@ export function NavBar() {
       >
         更多
       </button>
-      {fixedColumnIds.map(columnId => (
+      {fixedColumnIds.filter(id => id !== "weather").map(columnId => (
         <Link
           key={columnId}
           to="/c/$column"
@@ -33,6 +33,16 @@ export function NavBar() {
           {metadata[columnId].name}
         </Link>
       ))}
+      <Link
+        to="/c/$column"
+        params={{ column: "weather" }}
+        className={$(
+          "px-2 hover:(bg-primary/10 rounded-md)",
+          currentId === "weather" ? "color-primary font-bold" : "op-70 dark:op-90",
+        )}
+      >
+        {metadata.weather.name}
+      </Link>
     </span>
   )
 }

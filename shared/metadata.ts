@@ -24,9 +24,12 @@ export const columns = {
   hottest: {
     zh: "最热",
   },
+  weather: {
+    zh: "天气",
+  },
 } as const
 
-export const fixedColumnIds = ["focus", "hottest", "realtime"] as const satisfies Partial<ColumnID>[]
+export const fixedColumnIds = ["focus", "hottest", "realtime", "weather"] as const satisfies Partial<ColumnID>[]
 export const hiddenColumns = Object.keys(columns).filter(id => !fixedColumnIds.includes(id as any)) as HiddenColumnID[]
 
 export const metadata: Metadata = typeSafeObjectFromEntries(typeSafeObjectEntries(columns).map(([k, v]) => {
@@ -45,6 +48,11 @@ export const metadata: Metadata = typeSafeObjectFromEntries(typeSafeObjectEntrie
       return [k, {
         name: v.zh,
         sources: typeSafeObjectEntries(sources).filter(([, v]) => v.type === "realtime" && !v.redirect).map(([k]) => k),
+      }]
+    case "weather":
+      return [k, {
+        name: v.zh,
+        sources: [] as SourceID[],
       }]
     default:
       return [k, {

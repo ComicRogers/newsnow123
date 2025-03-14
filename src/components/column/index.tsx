@@ -1,6 +1,10 @@
 import type { FixedColumnID } from "@shared/types"
 import { useTitle } from "react-use"
+import { metadata } from "@shared/metadata"
+import { useAtom } from "jotai"
+import { useEffect } from "react"
 import { NavBar } from "../navbar"
+import { Weather } from "../weather"
 import { Dnd } from "./dnd"
 import { currentColumnIDAtom } from "~/atoms"
 
@@ -17,7 +21,13 @@ export function Column({ id }: { id: FixedColumnID }) {
       <div className="flex justify-center md:hidden mb-6">
         <NavBar />
       </div>
-      {id === currentColumnID && <Dnd />}
+      {id === "weather"
+        ? (
+            <Weather />
+          )
+        : (
+            id === currentColumnID && <Dnd />
+          )}
     </>
   )
 }
