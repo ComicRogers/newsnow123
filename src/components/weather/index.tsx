@@ -1,7 +1,6 @@
 import { useTitle } from "react-use"
 import { useCallback, useEffect, useState } from "react"
 import { metadata } from "@shared/metadata"
-import { NavBar } from "../navbar"
 
 // 和风天气API密钥
 const HEFENG_API_KEY = import.meta.env.WEATHERKEY || "91df240a02a04e41845ceb73727dc55e"
@@ -350,240 +349,234 @@ export function Weather() {
   useTitle(`NewsDaily | ${metadata.weather.name}`)
 
   return (
-    <>
-      <div className="flex justify-center md:hidden mb-6">
-        <NavBar />
-      </div>
+    <div className="max-w-5xl mx-auto px-4">
+      {/* 搜索栏 */}
+      <form onSubmit={handleSearch} className="mb-6 flex">
+        <input
+          type="text"
+          placeholder="搜索城市"
+          className="flex-1 py-2 px-4 rounded-l-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
+          value={searchInput}
+          onChange={e => setSearchInput(e.target.value)}
+        />
+        <button
+          type="submit"
+          className="bg-primary text-white py-2 px-6 rounded-r-lg hover:bg-primary/90 transition-colors"
+        >
+          搜索
+        </button>
+      </form>
 
-      <div className="max-w-5xl mx-auto px-4">
-        {/* 搜索栏 */}
-        <form onSubmit={handleSearch} className="mb-6 flex">
-          <input
-            type="text"
-            placeholder="搜索城市"
-            className="flex-1 py-2 px-4 rounded-l-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-primary"
-            value={searchInput}
-            onChange={e => setSearchInput(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="bg-primary text-white py-2 px-6 rounded-r-lg hover:bg-primary/90 transition-colors"
-          >
-            搜索
-          </button>
-        </form>
-
-        {isOffline
+      {isOffline
+        ? (
+            <div className="text-center text-red-500 p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
+              当前处于离线状态，无法获取天气数据
+            </div>
+          )
+        : loading
           ? (
-              <div className="text-center text-red-500 p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
-                当前处于离线状态，无法获取天气数据
+              <div className="flex justify-center items-center h-40">
+                <div className="text-primary animate-spin i-ph:spinner-gap-bold text-3xl"></div>
               </div>
             )
-          : loading
+          : error
             ? (
-                <div className="flex justify-center items-center h-40">
-                  <div className="text-primary animate-spin i-ph:spinner-gap-bold text-3xl"></div>
+                <div className="text-center text-red-500 p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
+                  {error}
                 </div>
               )
-            : error
+            : weatherData
               ? (
-                  <div className="text-center text-red-500 p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
-                    {error}
-                  </div>
-                )
-              : weatherData
-                ? (
-                    <>
-                      {/* 当前天气卡片 */}
-                      <div className={$([
-                        "p-6 rounded-2xl mb-6",
-                        "shadow shadow-primary/20 hover:shadow-primary/30 transition-shadow-500",
-                        "bg-primary/5 dark:bg-primary/10",
-                      ])}
-                      >
-                        <div className="flex flex-col md:flex-row justify-between items-center">
-                          <div className="mb-4 md:mb-0">
-                            <div className="flex items-center mb-1">
-                              <h2 className="text-2xl font-bold text-primary">{weatherData.location}</h2>
-                              <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{weatherData.country}</span>
-                            </div>
-                            <p className="text-5xl font-bold">{displayTemperature(weatherData.temperature)}</p>
-                            <p className="text-gray-600 dark:text-gray-300 mt-1">{weatherData.description}</p>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
-                              体感温度:
-                              {" "}
-                              {displayTemperature(weatherData.feelsLike)}
-                            </p>
-                            <p className="text-gray-500 dark:text-gray-400 text-sm">
-                              {formatTime(weatherData.dt, weatherData.timezone)}
-                              {" "}
-                              更新
-                            </p>
+                  <>
+                    {/* 当前天气卡片 */}
+                    <div className={$([
+                      "p-6 rounded-2xl mb-6",
+                      "shadow shadow-primary/20 hover:shadow-primary/30 transition-shadow-500",
+                      "bg-primary/5 dark:bg-primary/10",
+                    ])}
+                    >
+                      <div className="flex flex-col md:flex-row justify-between items-center">
+                        <div className="mb-4 md:mb-0">
+                          <div className="flex items-center mb-1">
+                            <h2 className="text-2xl font-bold text-primary">{weatherData.location}</h2>
+                            <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">{weatherData.country}</span>
                           </div>
-                          <div className="text-8xl text-primary">
-                            <div className={`i-${weatherData.icon}`}></div>
-                          </div>
+                          <p className="text-5xl font-bold">{displayTemperature(weatherData.temperature)}</p>
+                          <p className="text-gray-600 dark:text-gray-300 mt-1">{weatherData.description}</p>
+                          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+                            体感温度:
+                            {" "}
+                            {displayTemperature(weatherData.feelsLike)}
+                          </p>
+                          <p className="text-gray-500 dark:text-gray-400 text-sm">
+                            {formatTime(weatherData.dt, weatherData.timezone)}
+                            {" "}
+                            更新
+                          </p>
                         </div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                          <div className="flex items-center">
-                            <div className="i-ph:drop-half-bottom-bold text-primary text-xl mr-2"></div>
-                            <span>
-                              湿度:
-                              {weatherData.humidity}
-                              %
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="i-ph:wind-bold text-primary text-xl mr-2"></div>
-                            <span>{weatherData.windSpeed}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="i-ph:gauge-bold text-primary text-xl mr-2"></div>
-                            <span>
-                              气压:
-                              {weatherData.pressure}
-                              {" "}
-                              hPa
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="i-ph:eye-bold text-primary text-xl mr-2"></div>
-                            <span>
-                              能见度:
-                              {weatherData.visibility}
-                              {" "}
-                              km
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                          <div className="flex items-center">
-                            <div className="i-ph:sunrise-bold text-primary text-xl mr-2"></div>
-                            <span>
-                              日出:
-                              {formatTime(weatherData.sunrise, weatherData.timezone)}
-                            </span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="i-ph:sunset-bold text-primary text-xl mr-2"></div>
-                            <span>
-                              日落:
-                              {formatTime(weatherData.sunset, weatherData.timezone)}
-                            </span>
-                          </div>
+                        <div className="text-8xl text-primary">
+                          <div className={`i-${weatherData.icon}`}></div>
                         </div>
                       </div>
 
-                      {/* 小时预报卡片 */}
-                      <div className={$([
-                        "p-6 rounded-2xl mb-6 overflow-x-auto",
-                        "shadow shadow-primary/20 hover:shadow-primary/30 transition-shadow-500",
-                        "bg-primary/5 dark:bg-primary/10",
-                      ])}
-                      >
-                        <h3 className="text-xl font-bold mb-4">24小时预报</h3>
-                        <div className="flex space-x-4 min-w-max pb-2">
-                          {weatherData.hourly.map((hour, index) => (
-                            <div
-                              key={`hourly-${hour.time}-${index}`}
-                              className={$([
-                                "p-3 rounded-xl min-w-[80px]",
-                                "bg-white/50 dark:bg-gray-800/50",
-                                "flex flex-col items-center",
-                              ])}
-                            >
-                              <p className="font-medium text-sm mb-1">{hour.time}</p>
-                              <div className={`i-${hour.icon} text-2xl text-primary mb-1`}></div>
-                              <p className="font-bold">{displayTemperature(hour.temp)}</p>
-                              {hour.pop > 0
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                        <div className="flex items-center">
+                          <div className="i-ph:drop-half-bottom-bold text-primary text-xl mr-2"></div>
+                          <span>
+                            湿度:
+                            {weatherData.humidity}
+                            %
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="i-ph:wind-bold text-primary text-xl mr-2"></div>
+                          <span>{weatherData.windSpeed}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="i-ph:gauge-bold text-primary text-xl mr-2"></div>
+                          <span>
+                            气压:
+                            {weatherData.pressure}
+                            {" "}
+                            hPa
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="i-ph:eye-bold text-primary text-xl mr-2"></div>
+                          <span>
+                            能见度:
+                            {weatherData.visibility}
+                            {" "}
+                            km
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-between items-center mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center">
+                          <div className="i-ph:sunrise-bold text-primary text-xl mr-2"></div>
+                          <span>
+                            日出:
+                            {formatTime(weatherData.sunrise, weatherData.timezone)}
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <div className="i-ph:sunset-bold text-primary text-xl mr-2"></div>
+                          <span>
+                            日落:
+                            {formatTime(weatherData.sunset, weatherData.timezone)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 小时预报卡片 */}
+                    <div className={$([
+                      "p-6 rounded-2xl mb-6 overflow-x-auto",
+                      "shadow shadow-primary/20 hover:shadow-primary/30 transition-shadow-500",
+                      "bg-primary/5 dark:bg-primary/10",
+                    ])}
+                    >
+                      <h3 className="text-xl font-bold mb-4">24小时预报</h3>
+                      <div className="flex space-x-4 min-w-max pb-2">
+                        {weatherData.hourly.map((hour, index) => (
+                          <div
+                            key={`hourly-${hour.time}-${index}`}
+                            className={$([
+                              "p-3 rounded-xl min-w-[80px]",
+                              "bg-white/50 dark:bg-gray-800/50",
+                              "flex flex-col items-center",
+                            ])}
+                          >
+                            <p className="font-medium text-sm mb-1">{hour.time}</p>
+                            <div className={`i-${hour.icon} text-2xl text-primary mb-1`}></div>
+                            <p className="font-bold">{displayTemperature(hour.temp)}</p>
+                            {hour.pop > 0
+                              ? (
+                                  <div className="flex items-center mt-1 text-xs text-blue-500">
+                                    <div className="i-ph:drop-bold mr-1 text-xs"></div>
+                                    <span>
+                                      {hour.pop}
+                                      %
+                                    </span>
+                                  </div>
+                                )
+                              : (
+                                  <div className="flex items-center mt-1 text-xs text-gray-400">
+                                    <div className="i-ph:drop-slash-bold mr-1 text-xs"></div>
+                                    <span>0%</span>
+                                  </div>
+                                )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 天气预报卡片 */}
+                    <div className={$([
+                      "p-6 rounded-2xl",
+                      "shadow shadow-primary/20 hover:shadow-primary/30 transition-shadow-500",
+                      "bg-primary/5 dark:bg-primary/10",
+                    ])}
+                    >
+                      <h3 className="text-xl font-bold mb-4">7天天气预报</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
+                        {weatherData.forecast.map((day, index) => (
+                          <div
+                            key={`forecast-${day.date}-${index}`}
+                            className={$([
+                              "p-4 rounded-xl",
+                              "bg-white/50 dark:bg-gray-800/50",
+                              "flex flex-col items-center",
+                              index === 0 ? "md:bg-primary/10" : "",
+                            ])}
+                          >
+                            <p className="font-medium mb-1">
+                              {index === 0
+                                ? "今天"
+                                : day.dayOfWeek}
+                            </p>
+                            <p className="text-xs text-gray-500 mb-2">{day.date}</p>
+                            <div className={`i-${day.icon} text-3xl text-primary mb-2`}></div>
+                            <p className="text-sm mb-1">{day.description}</p>
+                            <div className="flex gap-2 mt-1">
+                              <span className="text-red-500 font-bold">{displayTemperature(day.highTemp)}</span>
+                              <span className="text-blue-500">{displayTemperature(day.lowTemp)}</span>
+                            </div>
+                            <div className="flex flex-col items-center mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 w-full">
+                              {day.pop > 0
                                 ? (
-                                    <div className="flex items-center mt-1 text-xs text-blue-500">
-                                      <div className="i-ph:drop-bold mr-1 text-xs"></div>
+                                    <div className="flex items-center mb-1 text-xs">
+                                      <div className="i-ph:drop-bold mr-1 text-blue-500"></div>
                                       <span>
-                                        {hour.pop}
-                                        %
+                                        {day.pop.toFixed(1)}
+                                        {" "}
+                                        mm
                                       </span>
                                     </div>
                                   )
                                 : (
-                                    <div className="flex items-center mt-1 text-xs text-gray-400">
-                                      <div className="i-ph:drop-slash-bold mr-1 text-xs"></div>
-                                      <span>0%</span>
+                                    <div className="flex items-center mb-1 text-xs">
+                                      <div className="i-ph:drop-slash-bold mr-1 text-gray-400"></div>
+                                      <span>0 mm</span>
                                     </div>
                                   )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* 天气预报卡片 */}
-                      <div className={$([
-                        "p-6 rounded-2xl",
-                        "shadow shadow-primary/20 hover:shadow-primary/30 transition-shadow-500",
-                        "bg-primary/5 dark:bg-primary/10",
-                      ])}
-                      >
-                        <h3 className="text-xl font-bold mb-4">7天天气预报</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
-                          {weatherData.forecast.map((day, index) => (
-                            <div
-                              key={`forecast-${day.date}-${index}`}
-                              className={$([
-                                "p-4 rounded-xl",
-                                "bg-white/50 dark:bg-gray-800/50",
-                                "flex flex-col items-center",
-                                index === 0 ? "md:bg-primary/10" : "",
-                              ])}
-                            >
-                              <p className="font-medium mb-1">
-                                {index === 0
-                                  ? "今天"
-                                  : day.dayOfWeek}
-                              </p>
-                              <p className="text-xs text-gray-500 mb-2">{day.date}</p>
-                              <div className={`i-${day.icon} text-3xl text-primary mb-2`}></div>
-                              <p className="text-sm mb-1">{day.description}</p>
-                              <div className="flex gap-2 mt-1">
-                                <span className="text-red-500 font-bold">{displayTemperature(day.highTemp)}</span>
-                                <span className="text-blue-500">{displayTemperature(day.lowTemp)}</span>
+                              <div className="flex items-center text-xs">
+                                <div className="i-ph:wind-bold mr-1 text-gray-500"></div>
+                                <span>{day.windSpeed}</span>
                               </div>
-                              <div className="flex flex-col items-center mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 w-full">
-                                {day.pop > 0
-                                  ? (
-                                      <div className="flex items-center mb-1 text-xs">
-                                        <div className="i-ph:drop-bold mr-1 text-blue-500"></div>
-                                        <span>
-                                          {day.pop.toFixed(1)}
-                                          {" "}
-                                          mm
-                                        </span>
-                                      </div>
-                                    )
-                                  : (
-                                      <div className="flex items-center mb-1 text-xs">
-                                        <div className="i-ph:drop-slash-bold mr-1 text-gray-400"></div>
-                                        <span>0 mm</span>
-                                      </div>
-                                    )}
-                                <div className="flex items-center text-xs">
-                                  <div className="i-ph:wind-bold mr-1 text-gray-500"></div>
-                                  <span>{day.windSpeed}</span>
-                                </div>
-                                <div className="flex items-center text-xs">
-                                  <div className="i-ph:gauge-bold mr-1 text-gray-500"></div>
-                                  <span>{day.windScale}</span>
-                                </div>
+                              <div className="flex items-center text-xs">
+                                <div className="i-ph:gauge-bold mr-1 text-gray-500"></div>
+                                <span>{day.windScale}</span>
                               </div>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ))}
                       </div>
-                    </>
-                  )
-                : null}
-      </div>
-    </>
+                    </div>
+                  </>
+                )
+              : null}
+    </div>
   )
 }
